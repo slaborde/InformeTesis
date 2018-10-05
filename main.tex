@@ -1,0 +1,1139 @@
+\documentclass[12pt]{article}
+\usepackage[nobottomtitles]{titlesec}
+\usepackage[utf8]{inputenc}
+\usepackage{graphicx}
+\usepackage{makeidx}
+\usepackage[utf8]{inputenc}
+\usepackage[spanish]{babel}
+\usepackage[none]{hyphenat}
+\usepackage[hidelinks]{hyperref}
+\usepackage{cite}
+\usepackage{fancyhdr}
+\usepackage{setspace}
+\usepackage{graphicx, adjustbox}
+\usepackage{listings}
+\graphicspath{ {./Imagenes/} }
+\usepackage{float}
+\usepackage[noabbrev, spanish]{cleveref}
+\hypersetup{
+    colorlinks,
+    citecolor=black,
+    filecolor=black,
+    linkcolor=black,
+    urlcolor=black
+}
+\usepackage{parskip}
+\usepackage{titlesec}
+\usepackage{todonotes}
+\usepackage{float}
+\usepackage{caption}
+\usepackage{subcaption}
+
+\usepackage[T1]{fontenc}
+\usepackage{inconsolata}
+
+\usepackage{color}
+
+\definecolor{pblue}{rgb}{0.13,0.13,1}
+\definecolor{pgreen}{rgb}{0,0.5,0}
+\definecolor{pred}{rgb}{0.9,0,0}
+\definecolor{pgrey}{rgb}{0.46,0.45,0.48}
+
+\usepackage{listings}
+\lstset{language=Java,
+  showspaces=false,
+  showtabs=false,
+  breaklines=true,
+  showstringspaces=false,
+  breakatwhitespace=true,
+  commentstyle=\color{pgreen},
+  keywordstyle=\color{pblue},
+  stringstyle=\color{pred},
+  basicstyle=\ttfamily,
+  moredelim=[il][\textcolor{pgrey}]{$$},
+  moredelim=[is][\textcolor{pgrey}]{\%\%}{\%\%}
+}
+
+\lstdefinelanguage{ATL}{
+  morekeywords={true,false,
+   Bag,Set,OrderedSet,Sequence,Tuple,Integer,Real,Boolean,String,TupleType,
+  not,and,or,xor,implies,module,create,from,uses,helper,def,context,
+  rule,using,derived,to,mapsTo,distinct,
+  foreach,in,do,if,then,else,endif,let,
+  library,query,for,div,refining,entrypoint},
+ keywordstyle=[2]{\textbf},
+ morecomment=[l]{--},
+ morestring=[b]{'},
+ tabsize=4}
+ 
+\newcommand{\lstATL}[1]{\lstinline[language=ATL,breaklines=true,basicstyle=\listingsfontinline,mathescape,literate={\-}{}{0\discretionary{-}{}{}}]§#1§}
+
+
+\makeindex
+\renewcommand{\contentsname}{Índice}
+\newcommand{\subsubsubsection}[1]{\paragraph{#1}\mbox{}\vspace{2ex}\newline}
+
+\pagestyle{fancy}
+\renewcommand{\headrulewidth}{0.4pt}
+\fancyhead{}
+\fancyhead[L]{\small Diseño de Topologías de Red Confiables}
+\fancyhead[R]{\small Año 2018}
+\fancyfoot{}
+\fancyfoot[C]{\thepage}
+\setlength{\headheight}{14pt}
+
+\newcommand*{\fitToLine}[1]{\adjustbox{max width=\linewidth}{#1}}
+
+\setcounter{tocdepth}{4} 
+\setcounter{secnumdepth}{4}
+
+\titleformat
+{\section} % command
+[display] % shape
+{\bfseries\Large\itshape} % format
+{Capítulo \ \thesection} % label
+{0cm} % sep
+{
+    \rule{\textwidth}{1pt}
+} % before-code
+[
+\rule{\textwidth}{0.3pt}
+] % after-code
+
+
+\begin{document}
+\sloppy
+\begin{titlepage}
+    \begin{center}
+        \vspace*{1cm}
+        
+        {\LARGE
+          \textbf{Universidad de la República}}
+        
+        \vspace{0.3cm}
+        {\Large
+        \textbf{Facultad de Ingeniería}\\
+        \vspace{0.2cm}
+        Instituto de Computación\\
+        \vspace{0.2cm}
+        Departamento de Investigación Operativa}
+       
+        \vspace{1.5cm}
+        
+        {\Huge
+        \textbf{Diseño de Topologías de Red Confiables\\ 		 V1.3}\par}
+       
+        \vfill
+        {\LARGE Informe de Tesis de Maestría\(\)}\\
+        \vfill
+        {\LARGE Pedeciba\(\)}
+        
+        \vspace{1.5cm}
+         {\large \underline{Estudiante}}\\
+        Ing. Sebastián Laborde\\
+        \vspace{0.5cm}
+         {\large \underline{Tutor}}\\
+        Dr. Ing. Franco Robledo\\
+        \vspace{1.5cm}
+       {\LARGE Año 2018}
+        
+    \end{center}
+\end{titlepage}
+\begin{abstract}
+En una red las entidades relevantes son nodos y conexiones entre nodos, y en general el principal objetivo buscado es lograr una comunicación segura entre nodos de esta, ya sea para redes telefónicas y de comunicación de datos, de transporte, arquitectura de computadores, redes de energía eléctrica o sistemas de comando y control.\\ 
+La optimización relativa al costo de una red y la confiabilidad de la misma, relacionada con la supervivencia de esta, son los criterios predominantes en la selección de una solución para la mayor parte de los contextos. A pesar que por años el costo ha sido el factor primario la confiabilidad ha ganado rápidamente en relevancia. Con sistemas de transmisión de fibra óptica de alta capacidad formando los backbones de la mayoría de las redes actuales la supervivencia del tráfico por sobre los fallos de red se ha convertido aún en más crítica.\\
+En ese sentido podemos diferenciar, a grandes rasgos, dos de los principales problemas a resolver en el análisis y diseño de topologías de red. Primeramente la obtención de una red óptima en algún sentido, siendo este definido por ejemplo mediante la obtención de la máxima cantidad posible de caminos disjuntos entre pares de nodos, esto sujeto a determinadas restricciones definidas según el contexto. El segundo problema es la evaluación de la confiabilidad de la red en función de las confiabilidades elementales de los nodos y arcos que componen la red. Estas confiabilidades elementales son probabilidades de operación asociadas a los nodos y arcos. Ambos problemas están fuertemente relacionados, pudiendo tener que comparar en el proceso de búsqueda de redes óptimas la confiabilidad entre soluciones candidatas, o luego de obtener una solución óptima tener que evaluar la confiabilidad de la misma y de esta forma descartarla o no.\\
+El presente trabajo se centra en la resolución del problema enfocado en ambos puntos planteados. Para ello modelamos el problema de diseño de la topología de red sobre la base del GSP-NC (Generalized Steiner Problem with Node-Connectivity Constraints).\\
+El presente problema es NP-duro. Nuestro objetivo es atacar de forma aproximada el modelo GSP-NC de tal modo de poder resolver la optimización de la red y luego medir la confiabilidad de la solución obtenida. Para ello optamos por desarrollar la metaherística VNS (Variable Neighbourhood Search). VNS es un método potente que combina el uso de búsquedas locales basadas en distintas definiciones de vecindad, el cual ha sido utilizado para obtener soluciones de buena calidad en distintos problemas de optimización combinatoria.\\ 
+En lo referente al cálculo de confiabilidad de la red desarrollamos RVR (Recursive Variance Reduction) como método de simulación, ya que la evaluación exacta de esta medida para redes de tamaño considerable es impracticable.\\ 
+Las pruebas experimentales fueron realizadas utilizando un conjunto amplio de casos de prueba, de heterogéneas topologías con diferentes características, incluyendo instancias de más de 700 nodos. Los resultados obtenidos indican tiempos de cómputo altamente aceptables acompañados de óptimos locales de buena calidad.\\
+
+Palabras clave: diseño topológico, confiabilidad, optimización, backbone, simulación, RVR, metaheurística, VNS.
+
+\end{abstract}
+\clearpage
+\tableofcontents
+\clearpage
+\section{Introducción}
+Un PN \cite{def_bp} es un conjunto de actividades realizadas en coordinación en un entorno organizacional y técnico, para alcanzar un objetivo del negocio. Los procesos de negocio presentan, en algunos casos, variantes de un proceso general base. Ejemplos son procesos de ventas para productos diferentes, o de contabilidad para distintos países. En la última década han surgido diversas propuestas para tratar la variabilidad de procesos con foco en el modelado de familias de procesos con variantes, evitando modelar cada variante en forma separada lo que implica duplicación y mantenimiento de las partes comunes. 
+
+Estas propuestas proponen definir una familia de procesos mediante un proceso base común (denominado proceso configurable) más las variantes que cada proceso específico requiere. Para la particularización específica de variantes en general se define algún tipo de regla de operación con parámetros de configuración \cite{def_provop}, modelos de características \cite{cvl_ayora_paper}, cuestionarios o tablas de decisión \cite{variablidad_nofuncionales} para apoyar la derivación de variantes desde el modelo genérico, en base a los parámetros de configuración elegidos en cada caso. Algunos enfoques proveen guías y feedback al usuario para asegurar que las opciones de particularización elegidas resultan en modelos con comportamiento y sintaxis correctas. Sin embargo, no se han encontrado propuestas que realicen la construcción automática de variantes.
+
+El objetivo principal de este proyecto es explorar la generación automática de variantes en familias de procesos de negocio, evitando así el proceso manual de configuración de las variantes específicas. Continúa el trabajo realizado en proyectos de grado de años anteriores \cite{proy_variabilidadpn,proy_variabilidadps} que hicieron un relevamiento extenso sobre propuestas para el modelado de familias de procesos y se enmarca en un proyecto actual con financiamiento de la Comisión Sectorial de Investigación Científica.
+
+De los proyectos anteriores se decidió analizar y profundizar su aplicabilidad para proceso de negocio de los modelos de variantes de CVL \cite{def_cvl} y su integración a herramientas gráficas de modelado empleando técnicas de MDE.
+
+Los objetivos específicos de este proyecto son: 
+\begin{itemize}
+\item Generar un relevamiento del estado del arte en la temática de generación automática de variantes en procesos de negocio
+\item Definir estrategias para la generación automática de variantes a partir de la aplicación de técnicas MDE
+\item Integrar las estrategias a un herramienta gráfica de modelado de variantes
+\item Aplicar las estrategias en casos de estudio para validación de la propuesta
+\end{itemize}
+
+El presente documento se encuentra organizado de la siguiente manera:
+\begin{itemize}
+\item Capítulo 2: introducción de los conceptos clave para el entendimiento del proyecto así como el detalle de las propuesta analizadas
+\item Capítulo 3: Tecnología y herramienta utilizadas para el desarrollo de la solución.
+\item Capítulo 4: Descripción de los conceptos más relevantes de variabilidad de BVR utilizados en la solución planteada.
+\item Capítulo 5: Caso de estudio aplicado a la herramienta construida.
+\item Capítulo 6: Conclusiones.
+\end{itemize}
+
+\clearpage
+\section{Estado del arte}
+
+\subsection{Procesos de negocio}
+Un Proceso de negocio (PN) \cite{def_bp} es un conjunto de actividades realizadas en coordinación en un entorno organizacional y técnico, para alcanzar un objetivo del negocio.
+
+Los procesos de negocio presentan, en algunos casos, variantes de un proceso general base. Ejemplos son procesos de ventas para productos diferentes, o de contabilidad para distintos países.
+
+Existen diversos lenguajes y estándares para el modelado de procesos de negocio, como ser: Diagramas de Actividad de UML, XML Process Definition Language(XPDL) y BPMN, entre otros.
+
+\subsection{Business Process Model and Notation (BPMN) 2.0}
+BPMN \cite{bpmn_def} provee una notación gráfica para la especificación de procesos de negocio independientemente del entorno de implementación.
+
+El objetivo principal es establecer una notación simple capaz de ser comprendida por los usuarios del negocio, así como compleja y precisa para los técnicos que deberán traducir los mismos en componentes de software para su ejecución y monitoreo.
+
+BPMN posee un metamodelo estándar compuesto de un conjunto de elementos que permitirán representar una variedad de situaciones. Permitiendo también poder realizar una identificación de los elementos del lenguaje mediante un componente de software.
+
+\begin{figure}[h!]
+  \includegraphics[width=\linewidth]{EjemploBPMNReparacion}
+  \caption{Ejemplo de proceso BPMN}
+  \label{fig:EjemploBPMN}
+\end{figure}
+
+En la \cref{fig:EjemploBPMN} se representa el proceso de reparación de un auto en un taller mecánico, aquí se puede visualizar la expresividad de la notación ya que por ejemplo permite representar la paralelización de tareas, la comunicación entre participantes del proceso (mediante mensajes).
+
+
+\subsection{Model Driven Engineering (MDE)}
+Model Driven Engineering (MDE)\cite{def_mde}, traducido al español como Ingeniería dirigida por modelos, es un paradigma de Ingeniería de Software que jerarquiza el modelado como principal actividad del ciclo de vida de un sistema de software (construcción, mantenimiento, ingeniería inversa, etc.).
+
+Propone la construcción de modelos (abstracciones) de diferentes aspectos de un sistema y la transformación de dichos modelos de forma (semi)automática. Pretendiendo reducir errores en el proceso de ingeniería de software al aumentar el nivel de abstracción en la especificación del sistema, posibilitando la verificación y reutilización de los modelos y las transformaciones. Asimismo, se enfoca en aumentar la productividad reduciendo tiempos de desarrollo a través de mecanismos automáticos de construcción.
+
+En este enfoque se destacan como conceptos principales: modelos, metamodelos y trasnformaciones. 
+
+\textbf{Modelo} es una descripción o especificación de un sistema y entorno para un cierto propósito. Usualmente es presentado como una combinación de dibujos y texto.
+
+\textbf{Metamodelo} es el modelo de un lenguaje de modelado. ''Meta'' enfatiza el hecho de que describe un lenguaje a un nivel de abstracción mayor. Debe ser capaz de describir la sintaxis concreta, abstracta y semántica de los modelos que lo conformen. Debe pertenecer una arquitectura de metamodelado, permitiendo así ver un metamodelo como un modelo.
+
+Los beneficios que ofrece un metamodelo son: 
+\begin{itemize}
+\item Permite relacionar lenguajes descritos usando el mismo lenguaje de metamodelado, pudiendo ser manipulados y gestionados de forma unificada.
+\item Definir lenguajes abstractos de una tecnología de implementación.
+\item Definir y combinar diferentes abstracciones para crear nuevos lenguajes más aptos para un dominio de aplicación (aumento de productividad)
+\end{itemize}
+
+\textbf{Transformaciones de modelos} proveen una forma de producir modelos a partir de un número de modelos de origen, por lo que será necesario definir formas que le permitan definir a los desarolladores, como los elementos de los modelos de origen son seleccionados y navegados para inicializar los elementos del modelo de destino.
+
+Uno de los principales conceptos en MDE es considerar todos los elementos, dentro de lo posible, como modelos. Las transformaciones se definirían como modelos conforme a un metamodelo que defina la semántica de la misma.
+
+Una transformacion define correspondencias entre diferentes metamodelos. Generalmente hay un modelo de origen y un modelo de destino que conforman diferentes metamodelos, al ejecutar la transformación se obtiene como resultado un modelo que conforma al metamodelo destino.
+
+Formalmente, como vemos en la figura \ref{fig:Mtransform}, una transformación de modelos Mt simple, que conforma el metamodelo MMt , debe proveer la forma de generar un modelo Mb, conforme a el metamodelo MMb, a partir del modelo Ma conforme a el metamodelo MMa
+
+
+\begin{figure}[h]
+ \centering
+  \includegraphics[width=6cm]{MTransofrm}
+  \caption{Transformación de modelos}
+  \label{fig:Mtransform}
+\end{figure}
+
+\subsection{Implementación}
+
+Para la solución planteada se utilizó el lenguaje de transformaciones que provee The Atlas Transformation Language \cite{presentacion_atl} (ATL) y el framework de eclipse que permite el diseño de modelos y la utilización de técnicas de MDE.
+
+\subsubsection{Eclipse Modeling Framework, EMF}
+
+EMF\cite{eclipse_emf} es un framework de modelado y generación de código para la construcción de aplicaciones basadas en un modelo de datos estructurado.
+
+Cuenta con un lenguaje de modelado de meta modelos Ecore el cual es una implementación en Java basada en Essential MOF (eMOF), definido por la OMG como un estándar para la definición de modelos.
+
+\subsubsection{The Atlas Transformation Language, ATL}
+
+ATL\cite{presentacion_atl} es un lenguaje de transformaciones especificado como metamodelo y sintaxis textual concreta. Híbrido entre declarativo e imperativo. El modo predeterminado de escritura de transformaciones es declarativo pero posee constructores imperativos en el caso de que resulte muy compleja la definición en forma declarativas. Estas transformaciones están compuestas por reglas que definen como elementos del modelo de origen deben ser tratados para generar el modelo de destino.
+
+\subsection{Análisis de propuestas de variabilidad}
+Adicionalmente a los enfoques analizados en los proyectos de referencia, se estudiaron artículos con propuestas de variabilidad, finalmente se profundizó en la propuesta BVR que resulta adecuada con los objetivos del proyecto.
+
+\subsubsection{CVL}
+CVL\cite{cvl_proposal,cvl_proposal2} (Common Variability Language) es un lenguaje independiente de domino para la especificación y resolución de variabilidad. Facilita la especificación y resolución de variabilidad sobre cualquier instancia de un lenguaje definido a partir de un metamodelo basado en MOF\cite{mof_omg}.
+
+Tal como se muestra en la \cref{fig:cvl_principal} el modelado de la variación queda independiente del modelo base y como resultado de aplicar una variante se obtiene un modelo en el mismo lenguaje permitiendo así utilizar cualquier herramienta del modelo base en este nuevo modelo
+\begin{figure}[h]
+ \centering
+  \includegraphics[width=\linewidth]{CVL_Principals}
+  \caption{Principios de CVL}
+  \label{fig:cvl_principal}
+\end{figure}
+
+La arquitectura de CVL consta de diferentes modelos interrelacionados. La abstracción consiste en un modelo de VSpec con restricciones, y un modelo de resolución correspondiente definiendo la selección de las opciones.
+
+El modelo de realización contiene los puntos de variación representando la asociación entre la abstracción de variabilidad y el modelo base
+
+\subsubsection{BVR}
+BVR (Base Variability Resolution models)\cite{bvr_specification} construido sobre CVL (Common variability Language)\cite{cvl_specification}, pero CVL no es un subconjunto de BVR ya que se removieron algunas clases del metamodelo de CVL en favor de la simplicidad y se realizaron mejoras.
+
+En el siguiente capítulo analizaremos en profundidad esta propuesta, que fue la elegida para la solución planteada.
+
+\subsubsubsection{BVR Tool}
+
+BVR Tool \cite{bvrtool} es un conjunto de plug-ins de Eclipse bajo la licencia ''Eclipse Public License'', que permiten realizar gráficamente los modelos definidos por BVR: feature model, resolution, realization y derviación de productos. 
+
+Mediante el desarrollo de un plugin permite la integración con diferentes editores de modelos a través de las operaciones que provee el ambiente de Eclipse.
+
+
+\subsubsection{Otras propuestas de variabilidad}
+
+A continuación se describen brevemente, propuestas que fueron analizadas pero no resultaron adecuadas para los objetivos del proyecto.
+
+\textbf{Modeling and managing variability in process-based service compositions}
+
+Este artículo \cite{proy_MMVPBSC} se enfoca en el modelado de la variabilidad en composición de servicios basados en procesos. 
+Propone modelar la variabilidad con,  puntos de variación y variantes y luego asignar correspondencias con feature models. Para soportar los puntos de variación propone una extensión del metamodelo de BPMN.
+Resulta poco útil en los objetivos de este proyecto dado que modifica el metamodelo BPMN.
+
+\textbf{vBPMN:Event-Aware Workflow Variants by Weaving BPMN2 and Business Rules}
+
+Esta propuesta \cite{proy_vBPMN} no aplica a las necesidades del proyecto porque está enfocada en dar soporte a la variabilidad eventos dependientes del contexto y control de excepciones,  es decir, se enfoca en aspectos del tiempo de ejecución( los cuales exceden los objetivos de este proyecto). 
+Para su modelado propone nuevos artefactos a BPMN, una extensión de BPMN, lo cual buscamos evitar.
+
+A grandes rasgos, propone resolver el problema con la extensión de BPMN y reglas de negocio.
+Puede considerarse una extensión de PROPOV, no hace énfasis en el modelado de la variabilidad.
+
+Propone en el modelado visual, dos nuevos artefactos 
+\begin{enumerate}
+\item paréntesis  [ ],  que definen “adaptive segment, que tendrá para cada variante un ''variant segment''. 
+\item diamante, que se coloca en la esquina izquierda de una tarea simple, tiene la misma semántica que lo anterior. 
+\end{enumerate}
+
+Las partes del diagrama BPMN(con estos artefactos adicionales) que quedan entre los paréntesis pueden ser reemplazables por un ''variant segment''. 
+
+\textbf{Configuring the variability of business process models using non-functional requirements}
+
+En el artículo \cite{proy_CVBPMUNFR} no se propone una forma de modelado para resolver la variabilidad.
+Presenta una metodología para identificar las posibles variantes que puede tener un proceso de negocio, basado en el análisis de los requerimientos no funcionales del problema.
+
+Puede ser entendido como un procedimiento ordenado para la identificación de todas las posibles variantes.
+
+Propone realizar dos fases la primera en la que se determina en primera instancia la detección de las variaciones, para este caso utiliza preguntas tales como ¿quién realiza la tarea ? , ¿con qué condiciones se debe realizar, el objetivo?.
+Luego se describen las variaciones en términos de BPMN utilizando variación y puntos de variación.
+
+\clearpage
+
+\section{Variabilidad mediante BVR}
+En este capítulo se detallan los conceptos más relevantes del modelado de variabilidad según BVR, lo cual permitirá una mayor comprensión de su utilización en la solución planteada
+
+\subsection{Modelos}
+BVR siguiendo la misma idea que CVL, está compuesto por tres modelos, a saber: realización, resolución y VSPEC, que definen las variaciones sobre un modelo base.
+
+Observamos en \cref{fig:ArquitecturaBVR} las inter-relaciones de estos modelos. La abstracción de variabilidad consiste en el modelo de VSpec suplementado con restricciones, y un correspondiente modelo de resolución el cual definirá la selección del contexto.
+\begin{figure}[h]
+ \centering
+  \includegraphics[width=8cm]{ArquitecturaBVR}
+  \caption{Arquitectura BVR}
+  \label{fig:ArquitecturaBVR}
+\end{figure}
+El modelo de VSpec es una evolución FODA \cite{foda}, pero el principal propósito es proveer una definición completa tal que el modelo resultado pueda ser construido de forma automática a parir de los modelos de VSpec, resolución y realización.
+
+\subsubsection{Modelo base}
+El modelo base es descrito por un DSL en este caso BPMN, y contiene la definición de los puntos de variación (''Placement'') lugares donde serán sustituidas las variantes según el contexto, así como todos los elementos comunes a las diferentes variantes.
+
+\subsubsection{Modelo realización}
+Contiene la definición de la correspondencia entre los elementos del modelo base con los puntos de variación, las restricciones, y el contexto en el que los puntos de variación serán válidos.
+A continuación vemos en detalle los puntos de variación y un caso particular de estos que es central para nuestra solución, los fragment substitution.
+
+\paragraph{Puntos de variación} 
+Un punto de variación es una especificación concreta de variabilidad en el modelo base, define las modificaciones a realizarse al modelo base al momento de la materialización. Están relacionados al modelo base mediante base model handles y ligados a VSpecs. Relacionar un punto de variación a un VSpec determina que la materialización del punto de variación dependa de la resolución del VSpec.
+
+\begin{figure}[h]
+ \centering
+  \includegraphics[width=\linewidth]{MetamodeloVariationPoint}
+  \caption{Punto de variación}
+  \label{fig:VariationPoint}
+\end{figure}
+
+Como se puede ver en la \cref{fig:VariationPoint} existen diferentes tipos de puntos de variación, en el marco de este proyecto se utilizará el punto de variación FragmentSubstitution el cual se detalla a continuación.
+
+\subparagraph*{Sustitución de fragmento (FragmentSubstitution)}
+Este tipo de punto de variación permite definir un fragmento del modelo base y sustituirlo por uno o más fragmentos del modelo de variantes. En la \cref{fig:FragmentSubstitution} se visualiza el fragmento del metamodelo de BVR correspondiente a este tipo de punto de variación, donde ObjectHandle contendrá las referencias a los objetos en el DSL del modelo base.
+\begin{figure}[h]
+ \centering
+  \includegraphics[width=\linewidth]{MetamodeloFragmentSubsitution}
+  \caption{FragmentSubstitution}
+  \label{fig:FragmentSubstitution}
+\end{figure}
+
+
+\subsection{Generación de familia}
+Para la generación de familias se utilizó la herramienta BVR Tools \cite{bvrtool} la cual proveía una interfaz gráfica para la definición de las mismas así como una implementación y generación de un modelo de variantes basado en BVR. Provee una facilidad adicional que es la simple integración mediante interfaces a cualquier editor que basado en ECore 
+
+En las secciones a continuación se detallan las etapas que se deberán seguir para la generación del archivo BVR utilizando BVR Tool.
+
+Para la creación del archivo BVR será necesario elegir en la opción de nuevo archivo el tipo BVR [\cref{fig:CreacionArchivoTipoArchivo}], luego continuar y se le solicitará ingresar el modelo a crear en el cual se deberá seleccionar BVR Model como se muestra en la \cref{fig:CreacionArchivoSelectModelo} 
+
+\begin{figure}[!h]
+  \begin{subfigure}[b]{0.5\textwidth}
+    \includegraphics[width=\textwidth]{CreacionFamilia/CreacionArchivo1}
+    \caption{Tipo de archivo}
+    \label{fig:CreacionArchivoTipoArchivo}
+  \end{subfigure}
+  \hfill
+  \begin{subfigure}[b]{0.5\textwidth}
+    \includegraphics[width=\textwidth]{CreacionFamilia/CreacionArchivo2}
+    \caption{Selección del modelo}
+    \label{fig:CreacionArchivoSelectModelo}
+  \end{subfigure}
+  \caption{Creación del archivo}
+\end{figure}
+
+\subsubsection{Modelo de variantes}
+Como primer paso para la generación de familias es necesario definir el árbol de VSpec que servirá para determinar que condiciones debe cumplir un punto de variación asociado al mismo para luego ser materializado en la etapa final del proceso. Para esto se deberá abrir el editor de VSpec mediante el click derecho sobre el archivo creado anteriormente y seleccionando BVR VSpec Editor como se muestra en la \cref{fig:AbrirVSpecEditor}.
+
+\begin{figure}[!h]
+\centering
+  \includegraphics[width=8cm]{CreacionFamilia/AbrirVSpecEditor}
+  \caption{Abrir editor VSpec}
+  \label{fig:AbrirVSpecEditor}
+\end{figure}
+
+El editor de VSpec [\cref{fig:VSpecEditor}] permite definir de forma gráfica cuales serán las variables de contexto que se deberán evaluar en el momento de la materialización de la instancia, aquí también se vera fácilmente como es la dependencia entre las misma. En el marco de este proyecto se podrán agregar solamente VSpec del tipo Choice. 
+
+Todas las operaciones de manipulación de VSpec (agregar, remover) se podrá realizar haciendo click derecho [\cref{fig:VSpecEditorManipulacion}] sobre el nodo del cual el nuevo VSpec dependerá, o en el caso de querer remover seleccionado el VSpec en cuestión y luego seleccionando remove.
+
+\begin{figure}[!h]
+  \begin{subfigure}[b]{0.5\textwidth}
+    \includegraphics[width=\textwidth]{CreacionFamilia/EditorVSpec}
+    \caption{Editor de VSpec}
+    \label{fig:VSpecEditor}
+  \end{subfigure}
+  \hfill
+  \begin{subfigure}[b]{0.5\textwidth}
+    \includegraphics[width=\textwidth]{CreacionFamilia/AgregarChoice}
+    \caption{Manipulación de elementos}
+    \label{fig:VSpecEditorManipulacion}
+  \end{subfigure}
+  \caption{Creación del archivo}
+\end{figure}
+
+\subsubsection{Modelo de realización}
+En esta sección se definirán los mecanismos que provee la herramienta para la definición de puntos de variación mediante Fragment Sustitution, y su asociación con los VSpec definidos en la parte anterior.
+
+Para realizar estas definiciones es necesario abrir el archivo BVR con el Realization Editor de una forma muy similar a la del editor anterior, click derecho sobre el archivo .bvr y seleccionando la opción Realization Editor [\cref{fig:AbrirRealizationEditor}].
+
+\begin{figure}[!h]
+\centering
+ \includegraphics[width=8cm]{CreacionFamilia/AbrirRealizationEditor}
+\caption{Abrir editor VSpec}
+  \label{fig:AbrirRealizationEditor}
+\end{figure}
+
+\subsubsubsection{Consideraciones}
+Debido a la interacción que posee la herramienta BVR tools con las operaciones provistas por la interfaz de eclipse existen las siguientes consideraciones:
+
+\begin{itemize}
+\item Se debe tener en todo momento el Realization Editor visible.
+\item Solo tener abierto y visible el modelo correspondiente al placement o replacement y poseer seleccionados solo los elementos que se quieran incluir en el nuevo placement o replacement.
+\end{itemize}
+
+\subsubsubsection{Creación de placement}
+Seleccionar del modelo base los elementos sobre los que se quiera crear el placement sin considerar los flujos de secuencia entrantes y salientes del conjunto, luego en el Realitation Editor sobre el cuadro de la derecha hacer click derecho y seleccionar ''Create placement'' tal como se muestra en la \cref{fig:CrearPlacement}.
+
+\begin{figure}[!h]
+\centering
+ \includegraphics[width=10cm]{CreacionFamilia/CreacionPlacement}
+\caption{Crear nuevo Placement}
+\label{fig:CrearPlacement}
+\end{figure}
+
+\subsubsubsection{Creación de replacement}
+Al igual que los placement los replacement se crean seleccionando los elementos del modelo y luego en dando click en create replacement como se muestra en la \cref{fig:CrearReplacement}.
+
+\begin{figure}[!h]
+\centering
+ \includegraphics[width=10cm]{CreacionFamilia/CreacionReplacement}
+\caption{Creación de replacement}
+\label{fig:CrearReplacement}
+\end{figure}
+
+En el ejemplo se creará como replacement el fragmento comprendido entre las dos gateways, también en esta imagen se puede ver como todos los replacement se definen en un mismo archivo debido a la restricción para la generación luego de la familia. Otra cosa a destacar es que todos los replacement se definieron como Pools para una mayor claridad de que elementos pertenecen a cada  replacement, al definir los replacement y para que la validación del modelo no emita error se agregaron eventos de inicio y fin en todos los pool pero no deben ser tomados en cuenta para la selección de los elementos.
+
+En la \cref{fig:ReplacementSeleccionado} se muestra una funcionalidad útil para el usuario al momento de identificar los elementos del modelo pertenecientes al placement o replacement, ya que al seleccionar uno placement o replacement, en el modelo se resaltan con colores todos los elementos pertenecientes al mismo así como sus límites.
+
+\begin{figure}[!h]
+\centering
+ \includegraphics[width=10cm]{CreacionFamilia/ReplacementSeleccionado}
+\caption{Replacement seleccionado}
+\label{fig:ReplacementSeleccionado}
+\end{figure}
+
+\subsubsubsection{Punto de variación - Fragment Sustitution}
+Luego de generados los placement y replacement se debe proceder a realizar la asociación de puntosd de variación del tipo Fragment Sustitution, para esto se deberá seleccionar un placement y un replacement, dar click derecho en la parte izquierda y seleccionar Create FragmentSustitution tal como se muestra en la \cref{fig:CrearFragmentSustitution}.
+
+\begin{figure}[!h]
+\centering
+ \includegraphics[width=8cm]{CreacionFamilia/CrearFragmentSustitution}
+\caption{Creación de punto de variación}
+\label{fig:CrearFragmentSustitution}
+\end{figure}
+
+Al crearlo se desplegará por cada fragment sustitution un listado de los VSpec definidos en el modelo de variantes, esto permitirá indicar cual variable de contexto afectar que se decida si se aplica o no la sustitución de fragmentos.
+
+Por último hay que generar los bindings que determinarán cual es la correspondencia entre elementos del placement y replacement así como se deben conectar los limites de cada fragmento. Realizando Click derecho sobre un un punto de variación y seleccionando generate bindings, se generará toda la información de los elementos a los que se debe realizar la correspondencia.
+
+Al ir a la hoja de bindings en el Realization Editor se podrá ver y asignar los mismo [\cref{fig:DefinicionBindings}], teniendo en cuenta las siguientes indicaciones:
+\begin{itemize}
+\item Todos los elementos referentes a metamodelo gráfico (BPNShape, BPMNEdge) dejarlos en NULL ya que no se van a considerar en al generación.
+\item Los flowElements del modelo base asignarlos a los correspondientes del replacement.
+\item Indicar el targetRef del SequenceFlow (límite de entrada del modelo base) al targetRef del elemento de entrada del modelo del replacement.
+\item Al igual que en el punto anterior, será necesario asignar el sourceRef del modelo base (límite de salida del modelo base) al correspondiente límite de salida del modelo destino.
+\item Asignar cual será la conexión inicial desde el modelo de replacement al modelo base mediante el incoming del primer elemento del modelo de replacement .
+\item Tal como se indicó en el paso anterior será necesario indicar como se conectará el fin del modelo del replacement al modelo base mediante el outgoing.
+\end{itemize}
+
+\begin{figure}[!h]
+\centering
+ \includegraphics[width=\linewidth]{CreacionFamilia/DefinicionBindings}
+\caption{Definición de Bindings}
+\label{fig:DefinicionBindings}
+\end{figure}
+
+\subparagraph*{Restricciones}
+Los fragmentos solo pueden poseer un elemento de salida y un elemento de entrada, para los cuales se definirá la correspondencia mediante los ''boundary elements'' [\cref{fig:BoundaryElement}], y siendo esta la única definición de los límites de los fragmentos.
+
+\begin{figure}[h]
+ \centering
+  \includegraphics[width=\linewidth]{MetamodeloBoundaryElement}
+  \caption{Definición de boundary element}
+  \label{fig:BoundaryElement}
+\end{figure}
+
+\subparagraph*{Semántica}
+Primero se deberán eliminar los elementos del modelo base definidos por PlacementFragment. Estos elementos podrán ser encontrados a través de la relación placement, en donde PlacementBoundaryElements son de clase ToPlacement (usando las referencias a elementos del modelo llamada insideBoundaryElement) y toda referencia que posean a estos, donde esta se corta en cualquier referencia que tenga el mismo valor que cualquiera de los PlacementBoundardyElement de los placement que son de clase FromPlacement (usando las referencias a elementos del modelo llamadas outsideBoundaryElement)
+
+Luego copiar los elementos del fragmento de reemplazo (ReplacementFragment) en el hueco provocado por la eliminación del paso anterior. Los elementos límites de Placement y Replacement deberán corresponderse. Para obtener los elementos a insertar se deberá utilizar la relación de replacement, tales que los ReplacementBoundaryElement sean del tipo ToReplacement (utilizando la referencia a elementos del modelo llamada insideBoundaryElement) y todos los elementos que posean relación a estos sin considerar aquellos que posean una realización a un elemento que se encuentre en los replacement del tipo FromReplacement (utilizando la referencia llamada outsideBoundaryElemento a elementos del modelo)
+
+Por último se deberá actualizar los límites de los fragmentos de Placement y Replacement, a través de los BondouryElementBindigns considerando las siguientes reglas:
+
+\begin{itemize}
+\item \fitToLine{salientes: fromReplacement.insideBondaryElemnt = fromPlacement.outsideBoundaryElement}
+\item \fitToLine{entrantes: toPlacement.ousideBondaryElement = toReplacement.insideBoundaryElement}
+\end{itemize}
+
+
+\subsubsection{Modelo resolución}
+Especifica el conjunto de condiciones del contexto, que variantes deberán ser materializadas, produciendo un modelo en el lenguaje del modelo base.
+
+\subsection{VSpec}
+Son especificaciones abstractas de variabilidad, es decir no definen consecuencias concretas en el modelo base. Son parte del modelo de realización, su representación es mediante una estructura de árbol permitiendo representar restricciones lógicas al momento de su materialización:
+
+Existen diferentes tipos de VSpec [\cref{fig:MetamodeloVSpec}] los cuales se describen a continuación.
+\begin{figure}[h]
+ \centering
+  \includegraphics[width=\linewidth]{MetamodeloVSpec}
+  \caption{VSpec}
+  \label{fig:MetamodeloVSpec}
+\end{figure}
+
+\begin{itemize}
+\item Choice: La resolución requiere decisión (Verdadero / Falso). Cuando un punto de variación se liga a un Choice, la decisión determina si se materializará el punto de variación.
+\item ChoiceOcurrance: Es similar a un Choice pero hace referencia a un VType
+\item VClassifier: VClassifier permite crear de 0 más instancias de un Choice que luego permitirá resolver de forma independiente cada subárbol de cada instancia.
+\item VClassOcurrance: Similar a un VClassifier pero para un VType y no contiene la definición del subárbol.
+\item Variable: Variable es un VSpec cuya resolución requiere proveer un valor. Cuando un punto de variación paramétrico está ligado a un VSpec de este tipo el valor será pasado como parámetro para la materialización del punto de variación.
+\end{itemize}
+
+\subsection{Metamodelo}
+El metamodelo [\cref{fig:metamodelo_bvr}] de BVR posee como root elemento BVRModel el cual contiene la información de todo el modelado de variantes es decir contiene los elementos del modelo base (baseModel) mediante referencias a ObjectHandle, modelo de variantes (variabiltyModel) a través de la definición de los árboles de VSpecs, modelo de realización (realizationModel) conteniendo la relación entre los objetos del modelo base y VSpecs permitiendo así luego su materialización, y por último el modelo de resolución (resolutionModel) el cual dado un modelo de VSpecs contiene un valor de resolución, por ejemplo en el caso de un VSpec del tipo choice contendrá el valor de verdad del mismo.
+\begin{figure}[h]
+ \centering
+  \includegraphics[width=\linewidth]{MetamodeloBVRModel}
+  \caption{Metamodelo BVR}
+  \label{fig:metamodelo_bvr}
+\end{figure}
+
+\clearpage
+\section{Solución propuesta}
+
+Hasta aquí hemos cumplido con el primer objetivo del proyecto, relevar el estado del arte en la temática, tal como se expuso en el capítulo anterior.
+
+En este capítulo nos enfocamos en definir estrategias para la generación automática de variantes a partir
+del modelado de la variabilidad y la aplicación de técnicas MDE, y describir como se hizo para integrar esas estrategias a un herramienta gráfica de modelado de variantes
+
+Queda para el capitulo siguiente, la aplicación de la estrategia y la herramienta creada a un caso de estudio como forma de validación de la propuesta. para validación de la
+propuesta
+
+\subsection{Aplicación de BVR a BPMN}
+Para aplicar BVR a BPMN utilizamos el Punto de Variación "Fragment Substitution". Como se mencionó en el capítulo antarior, un Fragment Substitution tiene dos fragmentos: Placement y Replacement.
+
+El fragmento Placement contiene los elementos BPMN que se borran del modelo base si se aplica la sustitución. 
+El fragmento Replacement contiene los elementos BPMN del modelo de replacements que se insertan en el nuevo modelo, en el lugar de los que se borraron (Placement).
+
+Un Fragment Substitution es un ChoiceVariationPoint, esto implica que la sustitución se va a aplicar si el Punto de Variación está ligado a una VSpec de tipo Choice que se resolvió "true".
+
+Para poder determinar qué VSpecs se resolvieron "true" se desarrolló una tranformación ATL. Esta transformación determina qué Fragment Substitutions hay que aplicar y luego hace la sustitución.
+La transformación tiene como modelos de entrada el modelo base en BPMN, el modelo de reemplazos en BPMN y el modelo de variantes en BVR. Con estos tres modelos se generará un nuevo modelo BPMN según las variables de contexto seleccionadas en el modelo de BVR.
+\newline
+
+ En ATL esto es: \newline
+\begin{adjustbox}{max width=\linewidth}
+\begin{lstlisting}
+create OUT: bpmn from IN: bvr, base: bpmn, replacement: bpmn;
+\end{lstlisting}
+\end{adjustbox}
+
+
+A partir del modelo bvr, la transformación define un helper que indica qué Fragment Substitutions se van a aplicar. Como se mencionó anteriormente, estos Fragment Substitutions son los que están ligados a una VSpec que se resolvió true.
+
+\begin{adjustbox}{max width=\linewidth}
+\begin{lstlisting}
+helper def: getResolvedFragmentSubstitutions: Sequence(bvr!FragmentSubstitution) =
+	bvr!FragmentSubstitution.allInstances() -> select(fs | thisModule.
+			getVSpecsResolvedTrue.includes(fs.bindingVSpec));
+\end{lstlisting}
+\end{adjustbox}
+
+En cada regla de la transformación  se resuelve si el elemento que cumple con la regla debe ser o no copiado al modelo resultado. Un elemento será copiado si pertenece al modelo base y no está incluido en ningún fragmento de tipo Placement, si pertenece al modelo base y pertenece a un fragment substitution resuelto como false, o si pertenece al modelo replacement y pertenece a algún fragmento de tipo Replacement que pertenece a un fragment substitution que fue resuelto como true.\newline \newline
+Los fragmentos se obtienen a partir del helper que indica los Fragment Substitutions a aplicar:
+
+\begin{adjustbox}{max width=\linewidth}
+\begin{lstlisting}
+-- Indica si hay que copiar el elemento
+helper def: copyElement(element: bpmn!FlowElement): Boolean =
+	thisModule.baseFlowElementsToCopy.includes(element) or thisModule.
+			replacementFlowElements.includes(element);
+\end{lstlisting}
+\end{adjustbox}
+
+
+La transformación hace uso de reglas abstractas para facilitar la copia de elementos, siguiendo la estructura del metamodelo de BPMN. A continuación se presenta un ejemplo simplificado para explicar el funcionameinto.   
+
+\begin{figure}[H]
+\centering
+  \includegraphics[width=\linewidth]{extracto_metamodelo_bpmn}
+  \caption{Extracto metamodelo BPMN}
+  \label{fig:extracto_metamodelo_bpmn}
+\end{figure}
+
+La [\cref{fig:extracto_metamodelo_bpmn}] muestra un extracto del metamodelo de BPMN para ilustrar la herencia entre elementos.
+Un elemento de tipo Event es un FlowNode, por lo que tiene las referencias incoming y outgoing. De la misma forma, un elemento de tipo StartEvent es un CatchEvent que a su vez es un Event. El mapeo de esa estructura a reglas es el siguiente
+
+\begin{adjustbox}{max width=\linewidth}
+\begin{lstlisting}
+abstract rule copyEvents {
+	from
+		event: bpmn!Event (
+			thisModule.copyElement(event)
+		)
+	to
+		eventOut: bpmn!Event (		
+			id <- event.id,
+			name <- event.name,
+			incoming <- event.incoming,
+			outgoing <- event.outgoing
+		)
+}
+\end{lstlisting}
+\end{adjustbox}
+
+\begin{adjustbox}{max width=\linewidth}
+\begin{lstlisting}
+abstract rule copyCatchEvents extends copyEvents {
+	from
+		event: bpmn!CatchEvent
+	to
+		eventOut: bpmn!CatchEvent (
+			parallelMultiple <- event.parallelMultiple
+		) 
+}
+\end{lstlisting}
+\end{adjustbox}
+
+\begin{adjustbox}{max width=\linewidth}
+\begin{lstlisting}
+rule copyStartEvent extends copyCatchEvents{
+	from
+		event: bpmn!StartEvent
+	to
+		eventOut: bpmn!StartEvent (
+			isInterrupting <- event.isInterrupting
+		)
+}
+\end{lstlisting}
+\end{adjustbox}
+
+\subsection{Implementación de la herramienta}
+
+Un requerimiento principal  de la herramienta es poder definir las familias de proceso de forma gráfica, luego estableciendo variables de contexto y utilizando técnicas de MDE (transformación de modelos) generar una instancia de la familia definida.
+
+Otro requerimientos es que debe ser un plugin de eclipse, y la utilización del lenguaje ATL para la definición de la transformación de modelos.
+
+\subsubsection{Solución}
+
+
+La solución propuesta se divide en cuatro grandes partes: la generación del modelo de variación, la integración con el modelador de BPMN, la transformación de modelos en ATL capaz de resolver dado un modelo base, uno de sustituciones y uno de configuración cual va a ser la variante a materializar y por último la forma de ejecutar esta transformación.
+
+La solución propuesta no realiza ninguna modificación ni extensión al metamodelo de BPMN lo cual permite que la familia generada por la herramienta pueda luego ser utilizada, o ejecutada por cual otra herramienta que soporte BPMN.
+
+
+\subsubsection{Arquitectura}
+La solución propuesta como se muestra en la \cref{fig:Arquitectura} se divide en dos plugins uno que será el encargado de interactuar entre la herramienta BVR tool y el modelador, y otro que permitirá ejecutar la transformación realizada en ATL mediante la selección del modelo base, modelo de reemplazo y bvr.  
+\begin{figure}[h]
+ \centering
+  \includegraphics[width=10cm]{ArquitecturaPlugin}
+  \caption{Arquitectura de la solución}
+  \label{fig:Arquitectura}
+\end{figure}
+
+\subsubsection{Integración con el modelador, BPMN2ModelerAdapter}
+BVR Tool provee de una interfaz que debe ser implementa para la obtención de los elementos del modelo los cuales serán utilizado luego para definir los placement y los replacement en cada fragment substitution
+
+Para esto se creó un plugin llamado BPMN2ModelerAdapter el cual implementa las interfaces para la utilización con el modelador.
+
+Debido a limitantes de Eclispe respecto a que thread pude manipular por ejemplo los elementos seleccionados se decidió crear la siguiente clase, la que luego será ejecuta de forma sincrona permitiendo así obtener los elementos seleccionados de un modelador que se encuentre en actualmente activo.
+
+\begin{adjustbox}{max width=\linewidth}
+\begin{lstlisting}
+class SelectionManager implements Runnable {
+    private BPMN2MultiPageEditor editor;
+    private List<Object> selection;
+    
+    public SelectionManager(BPMN2MultiPageEditor editor) {
+        this.editor = editor;
+    }
+    
+    public List<Object> getSelection(){
+        return selection;
+    }
+    
+    @SuppressWarnings("unchecked")
+    public void run() {
+        ISelection iselection = editor.getSite().getSelectionProvider().getSelection();
+        StructuredSelection structuredSelection = (StructuredSelection) iselection;
+        selection = structuredSelection.toList();
+    }
+}
+\end{lstlisting}
+\end{adjustbox}
+
+La operación más relevante de la interfaz es getModelObjects ya que mediante esta se obtienen cuales serán los elemento del modelo en la creación de una variante, para esto se le pasa a la operación un listado de elementos (aquellos que fueron seleccionados por el usuario) y deberá retornar cuales son los elementos del modelo para los mismos. En el caso de BPMN fue necesario descartar los elementos pertenecientes al modelo gráfico ya que solo puede existir en el marco de la herramienta un  elemento Ecore para cada elemento seleccionado, para esto de los elementos seleccionados se descarta todos los elementos que no pertenezca al metamodelo de BPMN2
+
+\begin{adjustbox}{max width=\linewidth}
+\begin{lstlisting}
+@Override
+public List<EObject> getModelObjects(List<Object> objects) {
+    List<EObject> eObjects = new BasicEList<EObject>();
+    for (Object object : objects) {
+        EObject eObject = null;
+        if (object instanceof EObject) {
+            eObject = (EObject) object;
+        } else if (object instanceof IGraphicalEditPart) {
+                eObject = ((IGraphicalEditPart) object).resolveSemanticElement();
+                eObjects.add(eObject);
+        } else if (object instanceof IPictogramElementEditPart) {
+            PictogramElement pe = ((IPictogramElementEditPart) object).getPictogramElement();
+            PictogramLink link = pe.getLink();
+            if (link != null) {
+                for (EObject bo : link.getBusinessObjects()) {
+                    /*Solo me quedo con los elementos que pertenecen a bpmn2*/
+                    if (bo.eClass().getEPackage().getName().equalsIgnoreCase("bpmn2")) 
+                        eObjects.add(bo); 
+                }
+            }
+        }
+    }
+    return eObjects;
+}
+\end{lstlisting}
+\end{adjustbox}
+
+
+\subsubsection{Ejecución de la transformación Plugin en Eclipse}
+Luego de tener el modelo base, el modelo de reemplazo y el modelo BVR, falta ejecutar la transformación.
+Para facilitar la ejecución de la transformación , desarrollamos un plug-in eclipse que permite seleccionar los archivos (modelo baso, modelo de reemplazo, BVR ) y generar la familia.
+
+Se invoca el plugin desde la barra de menú desplegable "BPMN Varibility" y luego en la opción "Generate Variants"
+
+\begin{figure}[H]
+\centering
+  \includegraphics[width=\linewidth]{plugin/plugin_ejecucion_1}
+  \caption{Invocación de plugin}
+  \label{fig:plugin_ejecucion_1}
+\end{figure}
+
+Se delpliega el menú para la selección de los archivos. Se tiene que indicar el archivo Congiguration (BVR), el modelo Base (BPMN), el modelo Replacement (BPMN) y el modelo Output (BPMN). 
+
+\begin{figure}[H]
+\centering
+  \includegraphics[width=\linewidth]{plugin/plugin_ejecucion_2}
+  \caption{Selección de archivos}
+  \label{fig:plugin_ejecucion_2}
+\end{figure}
+
+Luego de seleccionados todos los archivos se invoca la transformación al hacer click en botón OK.
+
+\begin{figure}[H]
+\centering
+  \includegraphics[width=\linewidth]{plugin/plugin_ejecucion_3}
+  \caption{Invocación de transformación}
+  \label{fig:plugin_ejecucion_3}
+\end{figure}
+
+\subsubsection{Restricciones}
+Para la generación de las variantes se deberá tener en consideración las siguientes restricciones:
+\begin{itemize}
+\item Se debe poseer un solo archivo modelo base.
+\item Los modelos de sustitución deberán estar definidos en un mismo archivo.
+\item Los placement (fragmentos del modelo base) y replacemente (fragmentos del modelo de sustitución) deberán tener solo un sequence flow de entrada y uno de salida ya que los mismo serán utilizado para establecer los bindings al momento de la materialización.
+\item un Replacement podrá ser utilizado en un solo fragment sustitution.
+\end{itemize}
+
+No se establece como una restricción pero si como una recomendación el nombrar todos los elementos de los modelos ya que estos permitirán identificar fácilmente los elementos que se quieren sustituir y como es su relación con el modelo base.
+
+\subsubsection{Consideraciones}
+Debido a que al momento de la sustitución no se puede determinar si la posición del los elementos gráficos es correcta y debido a que la herramienta BVR tool no permite poseer más de una definición de un elemento de un metamodelo, ejemplo un actividad posee el elemento de actividad de bpmn y shape correspondiente a la parte gráfica, se decidió excluir los elementos gráficos en la trasformación. Esto provoca que al abrir un archivo generado como resultado de la ejecución de la herramienta se emita un mensaje de que hay elementos que que no poseen definición gráfica.
+
+\subsubsection{Ejemplos de uso}
+En este capítulo se presenta uno de los ejemplos que se utilizó para ir probando la herramienta a medida que se desarrollaba. 
+
+En este ejemplo \cref{fig:ejemplosBase} muestra un modelo base con 2 fragmentos seleccionados, la selección es para mostrar gráficamente los fragmentos que formarán parte de la transformación.
+
+
+\begin{figure}[H]
+ \centering
+  \includegraphics[width=10cm]{ejemplosBase}
+  \caption{Modelo base}
+  \label{fig:ejemplosBase}
+\end{figure}
+
+La \cref{fig:ejemplosReplacement} muestra los fragmentos del modelo de replaements que formarán parte de la transformación. 
+
+\begin{figure}[H]
+ \centering
+  \includegraphics[width=10cm]{ejemplosReplacement}
+  \caption{Modelo de replacements}
+  \label{fig:ejemplosReplacement}
+\end{figure}
+
+
+
+
+Finalmente, la \cref{fig:ejemplosSalida} muestra el resultado luego de aplicar la transformación. 
+
+\begin{figure}[H]
+ \centering
+  \includegraphics[width=10cm]{ejemplosSalida}
+  \caption{Modelo salida}
+  \label{fig:ejemplosSalida}
+\end{figure}
+
+
+
+
+
+\clearpage
+\section{Caso de estudio}
+
+Para verificar que el prototipo propuesto es aplicable implementamos la generación de las variantes a un ejemplo que plantea las diferentes opciones al realizar el Chek-in de vuelo de un aeropuerto, caso de referencia expuesto en VIVACE \cite{vivace}. Para el modelado de la solución del caso, se tuvo en cuenta el análisis realizado en ese documento, se recomienda seguir la solución aquí propuesta teniendo a la mano el documento que expone el caso con mayor detalle.
+
+El caso plantea 6 variantes diferentes que son el resultado de distintas situaciones que pueden darse al realizar el check in, dependiendo de características del pasajero y variantes de equipaje.
+Para una persona se distinguen los casos: menor de edad no acompañado (UM, Unaccompanied minor), persona discapacitada (HAN, Handicapped), adulto (ADULT).
+Se distingue el destino del viaje, considerando: Estados Unidos (USA), o Unión Europea (EU).
+Se distinguen también el tipo de pasaje (business, economy),  casos de equipaje con sobrepeso (overweight luggage), check in realizado electrónicamente.
+
+
+Las variantes 1 (\cref{fig:Variant 1} )  y 2  (\cref{fig:Variant 2} ) asumen que el check-in está hecho en línea por el pasajero. Primero, se identifica al pasajero y un asiento
+es asignado. 
+La variante 1 describe el proceso en caso de que el pasajero esté volando desde Europa a los Estados Unidos, que requiere información sobre el alojamiento, así como completar el sistema electrónico para autorización de viaje (es decir, formulario ESTA). Finalmente, se imprime una tarjeta de embarque electrónica y el pasajero se despacha el equipaje en el mostrador de clase ejecutiva. 
+En cuanto a la variante 2, después de imprimir la tarjeta de embarque, se requiere el pago de una tarifa adicional, debido al sobrepeso del equipaje.
+A su vez, en la Variante 3  (\cref{fig:Variant 3} ) el check-in se realiza en la máquina de autoservicio y el equipaje se deja en el mostrador de entrega rápida del equipaje.
+Finalmente, para estas tres variantes de proceso, el check-in está disponible 23 h antes de la salida. Por el contrario, las variantes 4 \cref{fig:Variant 4} y 6 (\cref{fig:Variant 6}) representan el proceso de check-in realizado en el mostrador respectivo en el aeropuerto. por ejemplo, la Variante 4 describe el check-in para una persona menor no acompañada. En esta variante, se asigna un asiento especial y se completa un formulario adicional. Además, se requiere una copia de la tarjeta de embarque para el pariente que acompaña al menor a la puerta de embarque. Variante 5  (\cref{fig:Variant 5}) se refiere a un pasajero discapacitado que requiere asistencia adicional por parte de un
+acompañanate, mientras que la Variante 6 (\cref{fig:Variant 6})  corresponde al proceso de registro de un pasajero que transporta equipaje a granel. En estas
+tres variantes de proceso, un check-in solo puede realizarse al máximo
+3 h antes de la salida, una vez que los contadores se hayan abierto.
+Finalmente, la tarjeta de embarque está impresa en formato de papel.
+\cref{fig:Variant 1} y \cref{fig:Variant 2}  ejemplifican la familia de procesos del proceso de check-in e ilustran la complejidad de este último  caso debido a la variabilidad de su contexto de aplicación (por ejemplo, tipo de pasajero, destino del vuelo, y tipo de equipaje).
+
+El modelado, diseño e implementación de la familia de procesos sería un trabajo muy engorroso. 
+Resulta desafiante la adecuada gestión de las familias de procesos (es decir, el proceso variabilidad) y sus miembros (es decir, variantes de proceso).
+
+
+
+A continuación se muestran las 6 variantes posibles consideradas.
+
+\begin{figure}[H]
+\centering
+  \includegraphics[width=\linewidth]{casoEstudio/Variant_1}
+  \caption{Variant 1: Check-in online de pasajero adulto que viaja de USA a UE en clase ejecutiva}
+  \label{fig:Variant 1}
+\end{figure}
+
+\begin{figure}[H]
+\centering
+  \includegraphics[width=\linewidth]{casoEstudio/Variant_2}
+  \caption{Variant 2: Check-in online de pasajero adulto que viaja de EU a EU en clase económica con sobrepeso de equipaje}
+  \label{fig:Variant 2}
+\end{figure}
+
+\begin{figure}[H]
+\centering
+  \includegraphics[width=\linewidth]{casoEstudio/Variant_3}
+  \caption{Variant 3: Check-in en maquina de autoservicio de pasajero adulto que viaja de EU a EU en clase económica}
+  \label{fig:Variant 3}
+\end{figure}
+
+\begin{figure}[H]
+\centering
+  \includegraphics[width=\linewidth]{casoEstudio/Variant_4}
+  \caption{Variant 4: Check-in de menor no acompañanado que viaja de EU a EU en clase economica con familiar que lo acompaña hasta la puerta de embarque}
+  \label{fig:Variant 4}
+\end{figure}
+
+\begin{figure}[H]
+\centering
+  \includegraphics[width=\linewidth]{casoEstudio/Variant_5}
+  \caption{Variant 5: Check-in de pasajero discapacitado que viaja de EU a USA en clase economica}
+  \label{fig:Variant 5}
+\end{figure}
+
+\begin{figure}[H]
+\centering
+  \includegraphics[width=\linewidth]{casoEstudio/Variant_6}
+  \caption{Variant 6: Chek-in de pasajero adulto que viaja de EU a EU con equipaje a granel}
+  \label{fig:Variant 6}
+\end{figure}
+
+Para modelar el caso, tenemos que crear: 
+
+\begin{enumerate}
+\item Proceso base bpmn, donde se definen los puntos de variación
+\item Proceso de reemplazo bpmn, donde se definen las posibles variantes
+\item Modelo de Realización BVR, que defina las sustituciones
+\item Modelo VSPEC BVR, que defina las opciones lógicas de la realidad
+\item Modelo de Resolución BVR, que asigna valores a las variables definidas en VSPEC.
+\end{enumerate}
+
+
+Iniciamos creando nuestro modelo bpmn base, el cual define un flujo común de las variantes.
+
+El proceso base que observamos en \cref{fig:Proceso base} contiene tareas que son comunes a todas las variantes, IdentifyPassenger y PrintBoarding, y tareas que serán sustituidas según el caso que se esté generando, VariantAssingnSeat, VariantExtraInfo, VariantPayment y VariantLuggage. 
+
+\begin{figure}[H]
+\centering
+  \includegraphics[width=\linewidth]{casoEstudio/baseCheckIn2_2}
+  \caption{Proceso base}
+  \label{fig:Proceso base}
+\end{figure}
+
+Por la limitación de modelado que tiene nuestra solución, no pueden quedar contiguos dos artefactos que participen de diferentes fragment substitution, es por esto que ente VariantAssgingSeat y VariantExtraInfo está el evento VACIO 1. Al ejecutarse la transformación y generar la variante, este artefacto será elimiando. Lo mismo sucede entre VariantPayment y VariantLuggage donde está VACIO 2
+
+Modelamos como se muestra en  \cref{fig:Replacements} los posibles reemplazos identificados en un proceso bpmn, que llamamos de replacements.
+
+\begin{figure}[H]
+\centering
+  \includegraphics[width=\linewidth]{casoEstudio/replacements}
+  \caption{Replacements}
+  \label{fig:Replacements}
+\end{figure}
+\clearpage
+
+Luego de creados el modelo base y el modelo de replacements, continuamos con el modelo de realización BVR, donde creamo los Fragment substitution, que definen la correspondencia entre Placements del modelo base y Replacements del modelo de reemplazo.
+Cada Fragment substitution se corresponde con una variable VSPEC que indica cuando es ejecutada la sustitución.
+
+En \cref{fig:EjemploReplacements} mostramos los dos archivos bpmn y el modelo de reemplado BVR con los Fragment Substitution definidos.
+
+\begin{figure}[H]
+\centering
+  \includegraphics[width=\linewidth]{casoEstudio/FS_Placement-Replacement_ejemplo}
+  \caption{ Ejemplo replacements}
+  \label{fig:EjemploReplacements}
+\end{figure}
+
+En \cref{fig:DetalleRealization} vemos en detalle el modelo de realización BVR, específicamente el Fragment Substitution V4Luggage. Este Fragment Substitution reemplaza el fragmento V4Luggage del modelo base por LugaggePlacement del modelo de reemplazos, cuando al ejecutar la transformación es True el valor de la variable DLCR del modelo VSPEC BVR.
+
+\begin{figure}[H]
+\centering
+  \includegraphics[width=\linewidth]{casoEstudio/Realization_ejemplo}
+  \caption{Detalle de realization}
+  \label{fig:DetalleRealization}
+\end{figure}
+
+Además, para cada Fragment Substitution se deben definir los bindings entre los elementos de la sustitución, vemos esto en \cref{fig:EjemploBindings}
+
+\begin{figure}[H]
+\centering
+  \includegraphics[width=\linewidth]{casoEstudio/FS_bindings_ejemplo}
+  \caption{Ejemplo bindings}
+  \label{fig:EjemploBindings}
+\end{figure}
+
+En el modelo VSPEC del BVR que vemos en \cref{fig:VSpec} se define el árbol de las posibles variables, combinando adecuadamente los valores de estas variables en los Resolution models, se obtienen las configuraciones que permiten generar adecuadamente la familia de procesos.
+
+\begin{figure}[H]
+\centering
+  \includegraphics[width=\linewidth]{casoEstudio/VSpec}
+  \caption{VSpec}
+  \label{fig:VSpec}
+\end{figure}
+
+Veamos en \cref{fig:ResolutionVariant4} el modelo de resolución BVR que corresponde a la variante 4.
+
+\begin{figure}[H]
+\centering
+  \includegraphics[width=\linewidth]{casoEstudio/V4_Resolution}
+  \caption{Resolution Variant 4}
+  \label{fig:ResolutionVariant4}
+\end{figure}
+
+El resultado de ejecutar la transformación con los (base y replacement) y el BVR con el modelo de resolución recién visto, es el modelo que vemos en \cref{fig:OutVariant4} que representa la variante 4 del caso de estudio.
+
+\begin{figure}[H]
+\centering
+  \includegraphics[width=\linewidth]{casoEstudio/OUTCheckIn3_V4}
+  \caption{Out variant 4}
+  \label{fig:OutVariant4}
+\end{figure}
+
+
+Obtuvimos entonces la variante 4 de nuestro caso de estudio.
+En resumen los pasos fueron: creación de modelo base, creación de modelo de reemplazos, creación de modelo de realización BVR, creación de modelo VSPEC BVR, creación de resolution model BVR de la variante 4, ejecución de la transformación con los archivos mencionados.
+
+
+Para obtener las restantes variantes, se debe ejecutar la transformación con los mismos modelos bpmn, el mismo Resolution model BVR, el mismos VSPEC BVR, y el resolution model BVR que corresponde a la configuración de la variante.
+Mostramos a continuación los resolution model de los casos 1,2,3,5 y 6 y los modelos correspondientes generados al ejecutar.
+
+\begin{figure}[H]
+\centering
+  \includegraphics[width=\linewidth]{casoEstudio/V1_Resolution}
+  \caption{Resolution Variant 1}
+  \label{fig:ResolutionVariant1}
+\end{figure}
+
+\begin{figure}[H]
+\centering
+  \includegraphics[width=\linewidth]{casoEstudio/OUTCheckIn3_V1}
+  \caption{Out variant 1}
+  \label{fig:OutVariant1}
+\end{figure}
+
+\begin{figure}[H]
+\centering
+  \includegraphics[width=\linewidth]{casoEstudio/V2_Resolution}
+  \caption{Resolution Variant 2}
+  \label{fig:ResolutionVariant2}
+\end{figure}
+
+\begin{figure}[H]
+\centering
+  \includegraphics[width=\linewidth]{casoEstudio/OUTCheckIn3_V2}
+  \caption{Out variant 2}
+  \label{fig:OutVariant2}
+\end{figure}
+
+\begin{figure}[H]
+\centering
+  \includegraphics[width=\linewidth]{casoEstudio/V3_Resolution}
+  \caption{Resolution Variant 3}
+  \label{fig:ResolutionVariant3}
+\end{figure}
+
+\begin{figure}[H]
+\centering
+  \includegraphics[width=\linewidth]{casoEstudio/OUTCheckIn3_V3}
+  \caption{Out variant 3}
+  \label{fig:OutVariant3}
+\end{figure}
+
+\begin{figure}[H]
+\centering
+  \includegraphics[width=\linewidth]{casoEstudio/V5_Resolution}
+  \caption{Resolution Variant 5}
+  \label{fig:ResolutionVariant5}
+\end{figure}
+
+\begin{figure}[H]
+\centering
+  \includegraphics[width=\linewidth]{casoEstudio/OUTCheckIn3_V5}
+  \caption{Out variant 5}
+  \label{fig:OutVariant5}
+\end{figure}
+
+\begin{figure}[H]
+\centering
+  \includegraphics[width=\linewidth]{casoEstudio/V6_Resolution}
+  \caption{Resolution Variant 6}
+  \label{fig:ResolutionVariant6}
+\end{figure}
+
+\begin{figure}[H]
+\centering
+  \includegraphics[width=\linewidth]{casoEstudio/OUTCheckIn3_V6}
+  \caption{Out variant 6}
+  \label{fig:OutVariant6}
+\end{figure}
+
+\clearpage
+\section{Conclusiones}
+\subsection{Conclusiones}
+El objetivo principal de este proyecto era explorar la generación automática de variantes en familias de procesos de negocio utilizando técnicas de MDE. Para ello, primero se hizo un estudio de las propuestas que aplicaban variabilidad a BPMN. 
+
+Fueron descartadas algunas propuestas de variabilidad en BPMN que proponen la extensión del lenguaje con nuevos artefactos, es decir modificaciones al metamodelo BPMN original.
+Dentro de las propuestas que estudiadas, vimos que en general las que no agregan artefactos a los modelos estaban basadas en PROVOP o CVL.
+
+Luego de estudiar las alternativas vimos que CVL era un lenguaje muy completo en el que se explicaban los tipos de Puntos de Variación que había, en qué casos utilizarlos y cómo se aplicaban los cambios en el modelo luego de la resolución. Mientras que las propuestas basadas en PROVOP eran más teóricas y faltaba bajar muchas cosas a tierra. 
+
+A partir de este análisis decidimos seguir por un enfoque basado en CVL. 
+
+Al investigar CVL identificamos el tipo de Punto de Variación "Fragment Substitution", como el más adecuado para aplicar en la mayoría de los casos de BPMN.
+Luego nos encontramos con BVR, un lenguaje basado en CVL pero simplificado y con una herramienta (Plugin) que permite crear modelos BVR a partir de otros modelos. Decidimos utilizar BVR porque mantenía el Fragment Substitution y contaba con esa herramienta.
+
+Luego de elegir BVR como lenguaje para modelar la variabilidad, continuamos con la generación de las variantes a partir de un modelo BVR y modelos BPMN. Para ello, lo principal fue el desarrollo de una transformación ATL que tenía como entrada esos modelos y como salida un nuevo modelo BPMN.
+
+Se desarrolló un Plugin que permite incorporar el modelador de BPMN al Plugin de BVR, de esta forma se puede seleccionar gráficamente los fragmentos que van a formar parte del Fragment Substitution.
+Para la ejecución amigable de la transformación, se desarrolló Plugín de Eclipse que permite seleccionar visualmente los modelos de la ejecución e indicarle el modelo de salida.
+
+Finalmente validamos la propuesta mediante la implementacion de un caso de estudio de mediana complejidad.
+
+En cuanto al conocimiento adquirido podemos destacar que aprendimos el concepto de variabilidad, aprendimos sobre el lenguaje ATL para transformación de modelos y nos introdujimos en el desarrollo de Plugins de Eclipse.
+
+Como resultado se desarrollo un prototipo de herramienta que permite modelar gráficamente la variabilidad, y generar una familia de variantes de procesos BPMN aplicando técnicas MDE.
+
+En virtud de lo expuesto, concluímos que se lograron todos los objetivos del proyecto.
+
+\subsection{Trabajo a futuro}
+El pluguin de BVR no tiene restricciones sobre el modelo sobre el cual se definen los fragmentos. Actualmente se definen fragmentos de tipo Placement sobre el modelo base y fragmentos de tipo Replacement sobre el modelo replacement, pero también se podría definir un fragmento de tipo Placement sobre el modelo replacement.
+
+La forma en que está definida la transformación, junto con esa capacidad del plugin, hacen que sea posible anidar sustituciones. Esto es, un fragmento del modelo replacement podría pertenecer a un Fragment Substitution en calidad de Replacement y a su vez podría pertenecer a otro Fragment Substitution en calidad de Placement. En este caso, si esos Fragment Substitutions se resuelven true, ese fragmento no pertenecería al modelo final, también sería sustituído.
+
+\begin{figure}[H]
+\centering
+  \includegraphics[width=\linewidth]{in}
+  \caption{Sustitución anidada}
+  \label{fig:in}
+\end{figure}
+
+La \cref{fig:in} muestra un ejemplo  de sustitución anidada. En este ejemplo el primer diagrama es el modelo base, el segundo y tercer diagrama representan el modelo replacement. Se definen 2 Fragment Substitutions:
+\begin{itemize}
+\item FS(A,B): donde A es el Placement y B el Replacement
+\item FS(B,C): donde B es el Placement y C el Replacement
+\end{itemize}
+
+El cuarto diagrama muestra el resultado de la sustitución anidada.
+
+Para que esto funcione habría que hacer algunas modificaciones en la transformación:
+\begin{enumerate}
+\item Para determinar si se copia un elemento del modelo replacement habría que chequear que ese elemento no pertenezca a un fragmento de tipo Placement de un Fragment Substitution a aplicar. En el ejemplo, C se copia porque no pertenece a Placement en FS(A,B) ni en FS(B,C), B no se copia porque es Placement en FS(B,C).
+\item Habría que hacer alguna funcionalidad que determine el elemento final con el cual se conectarían los SequenceFlow del modelo base. Para el caso del ejemplo, los SequenceFlow deberían conectarse con C en lugar de B (que es lo que indica el FS que tiene a A como Placement).
+\item Igual que en el caso anterior, habría que desarrollar alguna funcionalidad que determine los incoming y outgoing del elemento que se copia. En el ejemplo, el incoming de C sería "base SF1" y el outgoing "base SF2"
+\end{enumerate}
+
+Al agregar esta funcionalidad  también debería haber una restricción que impida que se formen ciclos en las sustituciones.
+
+Tambien queda como trabajo a futuro la búsqueda de algún mecanismo para lograr que no sea necesario utilizar eventos intermedios cuando hay 2 Fragment Substitution contiguos.
+
+\clearpage
+\bibliography{biblio}
+\bibliographystyle{unsrt}
+
+\end{document}
